@@ -1,0 +1,2680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Refresh Game</title>
+  <style>
+    :root {
+      --font-family: Arial, sans-serif;
+      --background-color: #f0f0f0;
+      --section-background: white;
+      --section-border-radius: min(10px, 2.5vw);
+      --section-box-shadow: 0 0 min(10px, 2.5vw) rgba(0, 0, 0, 0.1);
+      --section-width: 95%;
+      --section-max-width: min(650px, 95vw);
+      --large-section-width: 100%;
+      --large-section-max-width: min(800px, 100vw);
+      --heading-color: #333;
+      --coins-color: #4CAF50;
+      --bitcoins-color: #3f2da6;
+      --tokens-color: #ccc91b;
+      --button-background: #4CAF50;
+      --button-color: white;
+      --button-border-radius: min(5px, 1.25vw);
+      --button-disabled-background: #cccccc;
+      --text-color: #666;
+      --leaderboard-border-color: #ddd;
+      --leaderboard-header-background: #f2f2f2;
+      --toggle-button-font: Roboto;
+      --open-button-background: #0046BA;
+      --closed-button-background: #008CBA;
+      --dark-background: #000000;
+      --dark-text: #fff;
+      --dark-section-background: #222222;
+      --dark-progress-background: #333333;
+      --dark-button-background: #555555;
+      --dark-button-disabled-background: #444;
+      --dark-button-disabled-color: #888;
+      --dark-leaderboard-header-background: #444;
+      --dark-leaderboard-border-color: #555;
+      --dark-open-button-background: #606060;
+      --dark-closed-button-background: #404040;
+      /* --- Sizes --- */
+      --body-padding: min(20px, 5vw);
+      --section-padding: min(20px, 5vw);
+      --section-margin: min(10px, 2.5vw);
+      --h1-font-size: min(36px, 9vw);
+      --coins-font-size: min(48px, 12vw);
+      --coins-font-size-small: min(30px, 7.5vw);
+      --coins-margin: min(20px, 5vw) 0;
+      --coins-margin-small: min(15px, 3.75vw) 0;
+      --change-notes-margin: 0 min(40px, 10vw);
+      --increment-font-size: min(22px, 5.5vw);
+      --p-font-size: min(18px, 4.5vw);
+      --button-padding: min(15px, 3.75vw) min(32px, 8vw);
+      --button-font-size: min(16px, 4vw);
+      --button-margin: min(4px, 1vw) min(2px, 0.5vw);
+      --upgrade-margin: min(10px, 2.5vw) 0;
+      --upgrade-description-font-size: min(0.9em, 3.6vw);
+      --leaderboard-cell-padding: min(10px, 2.5vw);
+      --toggle-button-padding: min(12px, 3vw);
+      --toggle-button-font-size: min(30px, 7.5vw);
+      --toggle-button-gap: min(10px, 2.5vw);
+      --large-toggle-button-gap: min(30px, 7.5vw);
+      --toggle-button-size: min(50px, 12.5vw);
+      --all-button-size: min(75px, 15vw);
+    }
+
+    body {
+      font-family: var(--font-family);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: var(--background-color);
+      padding: var(--body-padding);
+      box-sizing: border-box;
+    }
+
+    .section {
+      text-align: center;
+      padding: var(--section-padding);
+      background-color: var(--section-background);
+      border-radius: var(--section-border-radius);
+      box-shadow: var(--section-box-shadow);
+      margin: var(--section-margin);
+      width: var(--section-width);
+      max-width: var(--section-max-width);
+    }
+
+    h1 {
+      font-size: var(--h1-font-size);
+      color: var(--heading-color);
+    }
+
+    h1.title {
+      margin: var(--title-margin);
+    }
+
+    h2 {
+      color: var(--heading-color);
+    }
+
+    #coins {
+      font-size: var(--coins-font-size);
+      color: var(--coins-color);
+      margin: var(--coins-margin);
+    }
+
+    .coins {
+      font-size: var(--coins-font-size-small);
+      color: var(--coins-color);
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+
+    .bitcoins {
+      font-size: var(--coins-font-size-small);
+      color: var(--bitcoins-color);
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+
+    .tokens {
+      font-size: var(--coins-font-size-small);
+      color: var(--tokens-color);
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+
+    #increment {
+      font-size: var(--increment-font-size);
+    }
+
+    p {
+      font-size: var(--p-font-size);
+    }
+
+    p.subtitle {
+      margin: var(--subtitle-margin);
+      font-style: italic;
+    }
+
+    .changeNotesChange {
+      margin: var(--change-notes-margin);
+      text-align: left;
+    }
+
+    .upgrade div,
+    .setting div,
+    .achievement div {
+      /* white-space: pre-line; */
+    }
+
+    .upgradeTypeProgress {
+      width: 100%;
+      background-color: grey;
+      border-style: outset;
+      border-color: DarkSlateGray;
+      border-radius: 5px;
+    }
+
+    .upgradeTypeBar {
+      width: 0%;
+      height: 30px;
+      background-color: var(--coins-color);
+      border-style: hidden;
+      border-radius: 0px;
+    }
+
+    .miniUpgradeProgress {
+      width: 50px;
+    }
+
+    .intervalSlider {
+      width: 100%;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 15px;
+      border-radius: 5px;
+      background: grey;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+
+    .slider:hover {
+      opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--coins-color);
+      cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--coins-color);
+      cursor: pointer;
+    }
+
+    .sliderDisplay {
+      display: block;
+    }
+
+    button {
+      background-color: var(--button-background);
+      border: none;
+      color: var(--button-color);
+      padding: var(--button-padding);
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: var(--button-font-size);
+      margin: var(--button-margin);
+      cursor: pointer;
+      border-radius: var(--button-border-radius);
+    }
+
+    button:disabled {
+      background-color: var(--button-disabled-background);
+      cursor: not-allowed;
+    }
+
+    .upgrade,
+    .setting,
+    .achievement {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: var(--upgrade-margin);
+    }
+
+    .upgrade>div,
+    .setting>div,
+    .achievement>div {
+      text-align: left;
+    }
+
+    .upgrade>div>div:first-child,
+    .setting>div>div:first-child,
+    .achievement>div>div:first-child {
+      font-weight: bold;
+    }
+
+    .upgrade>div>div:last-child,
+    .setting>div>div:last-child,
+    .achievement>div>div:last-child {
+      font-size: var(--upgrade-description-font-size);
+      color: var(--text-color);
+    }
+
+    #leaderboardTable {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #leaderboardTable th,
+    #leaderboardTable td {
+      padding: var(--leaderboard-cell-padding);
+      border-bottom: 1px solid var(--leaderboard-border-color);
+    }
+
+    #leaderboardTable th {
+      background-color: var(--leaderboard-header-background);
+      font-weight: bold;
+    }
+
+    #leaderboardTable tr:last-child td {
+      border-bottom: none;
+    }
+
+    .toggles {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--toggle-button-gap);
+      margin-bottom: 10px;
+    }
+
+    .toggle-button {
+      font-family: var(--toggle-button-font);
+      padding: var(--toggle-button-padding);
+      font-size: var(--toggle-button-font-size);
+      width: var(--toggle-button-size);
+      height: var(--toggle-button-size);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #toggle-all {
+      width: var(--all-button-size);
+      font-family: var(--font-family);
+    }
+
+    .open {
+      background-color: var(--open-button-background);
+    }
+
+    .closed {
+      background-color: var(--closed-button-background);
+    }
+
+    .roman {
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <style>
+    body.large-mode .section {
+      width: var(--large-section-width);
+      max-width: var(--large-section-max-width);
+    }
+
+    body.large-mode .toggles {
+      gap: var(--large-toggle-button-gap);
+    }
+  </style>
+  <style>
+    body.dark-mode {
+      background-color: var(--dark-background);
+      color: var(--dark-text);
+    }
+
+    body.dark-mode .section {
+      background-color: var(--dark-section-background);
+      color: var(--dark-text);
+    }
+
+    body.dark-mode button {
+      background-color: var(--dark-button-background);
+      color: var(--dark-text);
+    }
+
+    body.dark-mode button:disabled {
+      background-color: var(--dark-button-disabled-background);
+      color: var(--dark-button-disabled-color);
+    }
+
+    body.dark-mode #leaderboardTable th {
+      background-color: var(--dark-leaderboard-header-background);
+    }
+
+    body.dark-mode #leaderboardTable td {
+      border-bottom: 1px solid var(--dark-leaderboard-border-color);
+    }
+
+    body.dark-mode h1 {
+      color: var(--dark-text);
+    }
+
+    body.dark-mode h2 {
+      color: var(--dark-text);
+    }
+
+    body.dark-mode #coins {
+      color: var(--coins-color);
+    }
+
+    body.dark-mode .upgrade>div>div:last-child,
+    body.dark-mode .setting>div>div:last-child {
+      font-size: 0.9em;
+      color: var(--text-color);
+    }
+
+    body.dark-mode .upgradeTypeProgress {
+      background-color: var(--dark-progress-background);
+      border-color: LightGray;
+    }
+
+    body.dark-mode .upgradeTypeBar {
+      background-color: var(--coins-color);
+    }
+
+    body.dark-mode .slider {
+      opacity: 1;
+    }
+
+    .slider:hover {
+      opacity: 0.7;
+    }
+
+    body.dark-mode .slider::webkit-slider-thumb {}
+
+    body.dark-mode .slider::moz-slider-thumb {}
+
+    body.dark-mode .open {
+      background-color: var(--dark-open-button-background);
+    }
+
+    body.dark-mode .closed {
+      background-color: var(--dark-closed-button-background);
+    }
+
+    body.dark-mode .reset-button {
+      background-color: var(--reset-button-background);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toggles" class="toggles hidden">
+    <button id="toggle-home" class="toggle-button open" onclick="openSection('home')">🏠</button>
+    <button id="toggle-shop" class="toggle-button closed" onclick="openSection('shop')">🛒</button>
+    <button id="toggle-luck-upgrades" class="toggle-button closed" onclick="openSection('luck-upgrades')">🍀</button>
+    <button id="toggle-achievements" class="toggle-button closed" onclick="openSection('achievements')">🏅</button>
+    <button id="toggle-changelog" class="toggle-button closed" onclick="openChangelog()">🗒️</button>
+    <button id="toggle-rebirth" class="toggle-button closed" onclick="openSection('rebirth')">🔁</button>
+    <button id="toggle-auto-upgrades" class="toggle-button closed" onclick="openSection('auto-upgrades')">🏭</button>
+    <button id="toggle-leaderboard" class="toggle-button closed" onclick="openSection('leaderboard')">👑</button>
+    <button id="toggle-settings" class="toggle-button closed" onclick="openSection('settings')">⚙️</button>
+    <button id="toggle-all" class="toggle-button closed" onclick="openAllSections()">ALL</button>
+  </div>
+  <div id="changelog" class="section changelog hidden">
+    <h2>Changelog</h2>
+    <div id="changelogContainer">
+      <!-- Changelog entries will be dynamically added here -->
+    </div>
+  </div>
+  <div id="home" class="section home">
+    <h1 class="title">The Refresh Game</h1>
+    <p class="subtitle">A clone of The Reload Game</p>
+    <p>Refresh the page to get coins!</p>
+    <p id="announcement"></p>
+    <div id="coins" class="coins">0$</div>
+    <div id="increment" class="coinsIncrement">Log in to play the game</div>
+  </div>
+  <div id="shop" class="section shop hidden">
+    <h2>Shop</h2>
+    <div class="coins"></div>
+    <h3 id="AutoUpgraderUnlockShop" style="display: none;">Auto Upgrader Progress:</h3>
+    <div id="AutoUpgraderProgressShop" class="upgradeTypeProgress" style="display: none;">
+      <div class="upgradeTypeBar AutoUpgrader"></div>
+    </div>
+    <div id="upgradesContainer">
+      <!-- Upgrades will be dynamically added here -->
+    </div>
+  </div>
+  <div id="luck-upgrades" class="section luck-upgrades hidden">
+    <h2>Luck Upgrades</h2>
+    <div class="coins"></div>
+    <div class="bitcoins" id="RepeatsUnlock" style="display: none;"></div>
+    <div id="luckUpgradesContainer">
+      <!-- Luck Upgrades will be dynamically added here -->
+    </div>
+  </div>
+  <div id="rebirth" class="section rebirth hidden">
+    <h2>Rebirth</h2>
+    <div class="coins"></div>
+    <div class="bitcoins"></div>
+    <h3 id="AutoRebirtherUnlockRebirth" style="display: none;">Auto Refresher Progress:</h3>
+    <div id="AutoRebirtherProgressRebirth" class="upgradeTypeProgress" style="display: none;">
+      <div class="upgradeTypeBar AutoRebirther"></div>
+    </div>
+    <div id="rebirthContainer">
+      <!-- Rebirth Upgrades will be dynamically added here -->
+    </div>
+  </div>
+  <div id="auto-upgrades" class="section auto-upgrades hidden">
+    <h2>Automation Upgrades</h2>
+    <div class="bitcoins"></div>
+    <div class="tokens"></div>
+    <div id="autoUpgradesContainer">
+      <!-- Automation Upgrades will be dynamically added here -->
+    </div>
+  </div>
+  <div id="achievements" class="section achievements hidden">
+    <h2>Achievements</h2>
+    <div id="achievementsContainer">
+      <!-- Achievements will be dynamically added here -->
+    </div>
+  </div>
+  <div id="leaderboard" class="section leaderboard hidden">
+    <h2>Leaderboard</h2>
+    <div style="overflow: hidden;">
+      <table id="leaderboardTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Total Score</th>
+            <th>Total Refreshes</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <!-- Leaderboard entries will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="settings" class="section settings hidden">
+    <h2>Settings</h2>
+    <div id="settingsContainer">
+      <!-- Settings will be dynamically added here -->
+    </div>
+  </div>
+  <script src="https://static.staticsave.com/wildwest/askupvote.js"></script>
+  <script>
+    (function() {
+      const GG_ALL_GAME_CONFIG = {
+        sectionIds: ['home', 'shop', 'luck-upgrades', 'rebirth', 'auto-upgrades', 'achievements', 'leaderboard', 'settings'],
+        upgrades: [{
+            name: "Tier 1 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 5,
+            costIncrease: 1.05,
+            increment: 9,
+            max_level: 99999,
+            rebirthsToUnlock: 0,
+          },
+          {
+            name: "Tier 2 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 600,
+            costIncrease: 1.15,
+            increment: 99,
+            max_level: 99999,
+            rebirthsToUnlock: 0,
+          },
+          {
+            name: "Tier 3 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 9600,
+            costIncrease: 1.25,
+            increment: 999,
+            max_level: 99999,
+            rebirthsToUnlock: 1,
+          },
+          {
+            name: "Tier 4 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 59000,
+            costIncrease: 1.5,
+            increment: 9999,
+            max_level: 99999,
+            rebirthsToUnlock: 3,
+          },
+          {
+            name: "Tier 5 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 936000,
+            costIncrease: 1.8,
+            increment: 99999,
+            max_level: 99999,
+            rebirthsToUnlock: 5,
+          },
+          {
+            name: "Tier 6 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 2974000,
+            costIncrease: 2.4,
+            increment: 999999,
+            max_level: 99999,
+            rebirthsToUnlock: 7,
+          },
+          {
+            name: "Tier 7 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 36475000,
+            costIncrease: 2.9,
+            increment: 9999999,
+            max_level: 99999,
+            rebirthsToUnlock: 9,
+          },
+          {
+            name: "Tier 8 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 672678000,
+            costIncrease: 3.0,
+            increment: 99999999,
+            max_level: 99999,
+            rebirthsToUnlock: 11,
+          },
+          {
+            name: "Tier 9 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 4687684000,
+            costIncrease: 3.45,
+            increment: 999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 13,
+          },
+          {
+            name: "Tier 10 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 9864756900,
+            costIncrease: 3.6,
+            increment: 9999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 15,
+          },
+          {
+            name: "Tier 11 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 12439838000,
+            costIncrease: 3.8,
+            increment: 99999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 17,
+          },
+          {
+            name: "Tier 12 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 213234823000,
+            costIncrease: 4.5,
+            increment: 99999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 19,
+          },
+          {
+            name: "Tier 13 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 6355362735000,
+            costIncrease: 5.2,
+            increment: 999999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 21,
+          },
+          {
+            name: "Tier 14 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 99848869874000,
+            costIncrease: 5.8,
+            increment: 9999999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 23,
+          },
+          {
+            name: "Tier 15 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 976768987688000,
+            costIncrease: 6.4,
+            increment: 99999999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 25,
+          },
+          {
+            name: "Tier 16 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 6708040004864000,
+            costIncrease: 7.0,
+            increment: 999999999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 27,
+          },
+          {
+            name: "Tier 17 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 79847299577847000,
+            costIncrease: 7.6,
+            increment: 9999999999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 29,
+          },
+          {
+            name: "Tier 18 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 895879465797895000,
+            costIncrease: 8.2,
+            increment: 99999999999999999,
+            max_level: 99999,
+            rebirthsToUnlock: 31,
+          },
+          {
+            name: "Tier 19 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 4e22,
+            costIncrease: 1.05,
+            increment: 1e18,
+            max_level: 99999,
+            rebirthsToUnlock: 33,
+          },
+          {
+            name: "Tier 20 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 7e23,
+            costIncrease: 1.05,
+            increment: 1e19,
+            max_level: 99999,
+            rebirthsToUnlock: 35,
+          },
+          {
+            name: "Tier 21 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 1e25,
+            costIncrease: 1.05,
+            increment: 1e20,
+            max_level: 99999,
+            rebirthsToUnlock: 37,
+          },
+          {
+            name: "Tier 22 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 3e26,
+            costIncrease: 1.05,
+            increment: 1e21,
+            max_level: 99999,
+            rebirthsToUnlock: 39,
+          },
+          {
+            name: "Tier 23 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 5e27,
+            costIncrease: 1.05,
+            increment: 1e22,
+            max_level: 99999,
+            rebirthsToUnlock: 41,
+          },
+          {
+            name: "Tier 24 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 8e28,
+            costIncrease: 1.05,
+            increment: 1e23,
+            max_level: 99999,
+            rebirthsToUnlock: 43,
+          },
+          {
+            name: "Tier 25 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 1e30,
+            costIncrease: 1.05,
+            increment: 1e24,
+            max_level: 99999,
+            rebirthsToUnlock: 45,
+          },
+          {
+            name: "Tier 26 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 3e31,
+            costIncrease: 1.05,
+            increment: 1e25,
+            max_level: 99999,
+            rebirthsToUnlock: 47,
+          },
+          {
+            name: "Tier 27 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 3e31,
+            costIncrease: 1.05,
+            increment: 1e26,
+            max_level: 99999,
+            rebirthsToUnlock: 49,
+          },
+          {
+            name: "Tier 28 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 3e31,
+            costIncrease: 1.05,
+            increment: 1e27,
+            max_level: 99999,
+            rebirthsToUnlock: 51,
+          },
+          {
+            name: "Tier 29 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 5e32,
+            costIncrease: 1.05,
+            increment: 1e28,
+            max_level: 99999,
+            rebirthsToUnlock: 53,
+          },
+          {
+            name: "Tier 30 Upgrade",
+            description: "+$value per refresh",
+            baseCost: 8e33,
+            costIncrease: 1.05,
+            increment: 1e29,
+            max_level: 99999,
+            rebirthsToUnlock: 55,
+          }
+        ],
+        luckUpgrades: [{
+            id: 'unlock',
+            name: 'Critical Refresh',
+            description: 'Get a chance to get more coins from a refresh',
+            baseCost: 5_000,
+            costIncrease: 1,
+            max_level: 1,
+            rebirthsToUnlock: 2,
+          },
+          {
+            id: 'chance',
+            name: 'Chance of Critical Refresh',
+            description: '+1% to get Critical Refresh (Currently value%)',
+            baseCost: 20_000,
+            costIncrease: 1.25,
+            max_level: 95,
+            rebirthsToUnlock: 2,
+          },
+          {
+            id: 'multiplier',
+            name: 'Crtitical Refresh multiplier',
+            description: 'Increases the multiplier of Critical Refresh (Currently xvalue)',
+            baseCost: 20_000,
+            costIncrease: 1.05,
+            max_level: 99999,
+            rebirthsToUnlock: 2,
+          },
+          {
+            id: 'repeat',
+            name: 'Critical Refresh Repeats',
+            description: 'Increases the number of times you can get a Critical Refresh per Refresh, increasing the multiplier further based on chance.',
+            baseCost: 20,
+            costIncrease: 4.5,
+            max_level: 99999,
+            rebirthsToUnlock: 6,
+          },
+        ],
+        rebirthUpgrades: [{
+            id: 'rebirth',
+            name: 'Rebirth',
+            description: '+value₿ (Currently btc₿)<br> You are nextbtc% to the next btcper₿!',
+            baseCost: 9999,
+            costIncrease: 3.5,
+            max_level: 99999,
+            rebirthsToUnlock: 0,
+          },
+          {
+            id: 'bitcoins-per-rebirth',
+            name: 'Bitcoins per rebirth',
+            description: '+inc₿ per rebirth (Currently value₿ per rebirth)',
+            baseCost: 1,
+            costIncrease: 1.2,
+            max_level: 99999,
+            rebirthsToUnlock: 1,
+          },
+          {
+            id: 'profit-multiplier',
+            name: 'Profit multiplier',
+            description: 'Additional multiplier for Coins Per Refresh (Currently xvalue)',
+            baseCost: 1,
+            costIncrease: 1.35,
+            max_level: 99999,
+            rebirthsToUnlock: 1,
+          },
+          {
+            id: 'cost-reduction',
+            name: 'Cost Reduction',
+            description: 'Reduces the cost of upgrades, including rebirths. (Currently value% off)',
+            baseCost: 1,
+            costIncrease: 1.5,
+            max_level: 99999,
+            rebirthsToUnlock: 2,
+          }
+        ],
+        autoUpgrades: [{
+            id: 'exchange',
+            name: 'Exchange',
+            description: 'Exchange your bitcoins for automation tokens! +valueT (Currently tokenT)',
+            baseCost: 2,
+            costIncrease: 1.125,
+            max_level: 99999,
+            rebirthsToUnlock: 4,
+          },
+          {
+            id: 'auto-upgrade-unlock',
+            name: 'Auto Upgrader',
+            description: 'Automatically unlocks upgrades. Interval, maximum upgrade tier and more can be improved with upgrades.',
+            baseCost: 1,
+            costIncrease: 1,
+            max_level: 1,
+            rebirthsToUnlock: 4,
+          },
+          {
+            id: 'auto-upgrade-interval',
+            name: 'Auto Upgrader Interval',
+            description: 'Decreases the minimum interval of the Auto Upgrader. (Currently once every values)',
+            baseCost: 2,
+            costIncrease: 1.25,
+            max_level: 55,
+            rebirthsToUnlock: 4,
+          },
+          {
+            id: 'auto-upgrade-max-tier',
+            name: 'Auto Upgrader Max Tier',
+            description: 'Increases the maximum tier of the Auto Upgrader. (Currently up to tier value)',
+            baseCost: 2,
+            costIncrease: 1.5,
+            max_level: 27,
+            rebirthsToUnlock: 6,
+          },
+          {
+            id: 'auto-upgrade-multiplier',
+            name: 'Auto Upgrader Upgrade Multiplier',
+            description: 'Upgrades the Auto Upgrader to purchase multiple upgrades with the same amount of money. (Currently xvalue)',
+            baseCost: 5,
+            costIncrease: 2.25,
+            max_level: 99999,
+            rebirthsToUnlock: 8,
+          },
+          {
+            id: 'auto-refresh-unlock',
+            name: 'Auto Refresher',
+            description: 'Automatically refreshes. Interval, count and more can be improved with upgrades.',
+            baseCost: 10,
+            costIncrease: 1,
+            max_level: 1,
+            rebirthsToUnlock: 6,
+          },
+          {
+            id: 'auto-refresh-interval',
+            name: 'Auto Refresher Interval',
+            description: 'Decreases the minimum interval of the Auto Refresher. (Currently once every values)',
+            baseCost: 12,
+            costIncrease: 2.45,
+            max_level: 159,
+            rebirthsToUnlock: 6,
+          },
+          {
+            id: 'auto-refresh-multiplier',
+            name: 'Auto Refresher Refresh Multiplier',
+            description: 'Upgrades the multiplier for refreshes done by the Auto Refresher. (Currently xvalue)',
+            baseCost: 16,
+            costIncrease: 3.5,
+            max_level: 99999,
+            rebirthsToUnlock: 10,
+          },
+          {
+            id: 'auto-refresh-count',
+            name: 'Auto Refresher Count',
+            description: 'Adds additional Auto Refreshers, increasing the number of times the Auto Refresher refreshes. (Currently value Auto Refreshers)',
+            baseCost: 20,
+            costIncrease: 4,
+            max_level: 99999,
+            rebirthsToUnlock: 12,
+          },
+          {
+            id: 'auto-rebirth-unlock',
+            name: 'Auto Rebirther',
+            description: 'Automatically Rebirths. Interval and other features can be improved with upgrades.',
+            baseCost: 40,
+            costIncrease: 1,
+            max_level: 1,
+            rebirthsToUnlock: 10,
+          },
+          {
+            id: 'auto-rebirth-interval',
+            name: 'Auto Rebirther Interval',
+            description: 'Decreases the minimum interval of the Auto Rebirther. (Currently once every values)',
+            baseCost: 50,
+            costIncrease: 3.25,
+            max_level: 199,
+            rebirthsToUnlock: 10,
+          },
+          {
+            id: 'auto-rebirth-multiplier',
+            name: 'Auto Rebirther Rebirth Multiplier',
+            description: 'Upgrades the Auto Rebirther, multiplying the number of bitcoins recieved when rebirthing. (Currently xvalue)',
+            baseCost: 60,
+            costIncrease: 3.75,
+            max_level: 99999,
+            rebirthsToUnlock: 12,
+          },
+          {
+            id: 'auto-rebirth-max-bonus',
+            name: 'Auto Rebirther Maximum Bitcoin Bonus',
+            description: 'Allows the Auto Rebirther to recieve bitcoin bonuses when rebirthing. (Currently up to xvalue bonus)',
+            baseCost: 70,
+            costIncrease: 4.25,
+            max_level: 99999,
+            rebirthsToUnlock: 14,
+          },
+        ],
+        achievements: [{
+            name: 'First Steps',
+            description: 'Do a refresh',
+            requirement: (gameState) => (gameState.totalReloads >= 1),
+            display: (gameState) => true,
+          },
+          {
+            name: 'Upgrader',
+            description: 'Buy an upgrade',
+            requirement: (gameState) => (gameState.coinsPerReload > 1),
+            display: (gameState) => true,
+          },
+          {
+            name: 'Reborn',
+            description: 'Do a rebirth',
+            requirement: (gameState) => (gameState.rebirths >= 1),
+            display: (gameState) => true,
+          },
+          {
+            name: 'Beginner\'s Luck',
+            description: 'Unlock Critical Refresh',
+            requirement: (gameState) => (gameState.criticalReloadUnlocked),
+            display: (gameState) => gameState.achievements[2],
+          },
+          {
+            name: 'Billionaire',
+            description: 'Have 1 billion coins at the same time',
+            requirement: (gameState) => (gameState.coins >= 1_000_000_000),
+            display: (gameState) => gameState.achievements[2],
+          },
+          {
+            name: 'Crypto Enthusiast',
+            description: 'Have 50 bitcoins at the same time',
+            requirement: (gameState) => (gameState.bitcoins >= 50),
+            display: (gameState) => gameState.achievements[2],
+          },
+          {
+            name: 'Automator ROI',
+            description: 'Do an exchange',
+            requirement: (gameState) => (gameState.exchanges >= 1),
+            display: (gameState) => gameState.rebirths >= 4,
+          },
+          {
+            name: 'Automator ROII',
+            description: 'Do 10 exchanges',
+            requirement: (gameState) => (gameState.exchanges >= 10),
+            display: (gameState) => gameState.achievements[6],
+          },
+          {
+            name: 'Automator ROIII',
+            description: 'Do 25 exchanges',
+            requirement: (gameState) => (gameState.exchanges >= 25),
+            display: (gameState) => gameState.achievements[7],
+          },
+          {
+            name: 'Large Number Classifer',
+            description: 'Have 1 decillion coins at the same time',
+            requirement: (gameState) => (gameState.coins >= 1e33),
+            display: (gameState) => gameState.achievements[4],
+          },
+          {
+            name: 'Lucky Achiever',
+            description: 'Get 50% Critical Refresh chance',
+            requirement: (gameState) => (gameState.criticalReloadChance >= 0.5),
+            display: (gameState) => gameState.achievements[3],
+          },
+          {
+            name: 'Rebirth Loop',
+            description: 'Do 25 rebirths',
+            requirement: (gameState) => (gameState.rebirths >= 25),
+            display: (gameState) => gameState.rebirths >= 10,
+          },
+          {
+            name: 'Luck Master',
+            description: 'Get 100% Critical Refresh chance',
+            requirement: (gameState) => (gameState.criticalReloadChance >= 1),
+            display: (gameState) => gameState.achievements[10],
+          },
+          {
+            name: 'Rebirth Master',
+            description: 'Do 55 rebirths',
+            requirement: (gameState) => (gameState.rebirths >= 55),
+            display: (gameState) => gameState.rebirths >= 30,
+          },
+          {
+            name: 'Champion',
+            description: 'Unlock all other achievements',
+            requirement: (gameState) => (gameState.achievements.every((achievement, index) => (
+              GG_ALL_GAME_CONFIG.achievements[index].name == 'Champion' ? true : achievement
+            ))),
+            display: (gameState) => true,
+          }
+        ],
+        settings: [{
+            id: 'dark-mode',
+            name: 'Dark mode',
+            description: 'Toggles the dark mode theme, darkening most UI elements.',
+            buttonAction: "toggleDarkMode()",
+            buttonText: 'Toggle dark mode',
+          },
+          {
+            id: 'alert-toggle',
+            name: 'Toggle alerts',
+            description: 'Toggles alerts, removing pop-up messages.',
+            buttonAction: "toggleAlerts()",
+            buttonText: 'Toggle alerts',
+          },
+          {
+            id: 'large-form-only',
+            name: 'Large form only',
+            description: 'If large form should always be used for numerical display.',
+            buttonAction: "toggleLFO()",
+            buttonText: 'Toggle large form only',
+          },
+          {
+            id: 'large-mode',
+            name: 'Large mode',
+            description: 'Increases tab width and navbar gaps to accomodate larger screen sizes.',
+            buttonAction: "toggleLargeMode()",
+            buttonText: 'Toggle large mode'
+          }
+        ],
+        changelog: [{
+            name: 'Automation Update - Immediate Patch',
+            description: 'Fix lots of new issues that arrised at the release of the Automation Update.',
+            date: '13/02/2025',
+            version: 1,
+            major: 2,
+            minor: 1,
+            changes: [
+              "Multiple bugfixes.",
+              "Decreased the cost scaling of exchanging.",
+            ],
+          },
+          {
+            name: 'Automation Update',
+            description: 'Adds automation to the game.',
+            date: '13/02/2025',
+            version: 1,
+            major: 2,
+            minor: 0,
+            changes: [
+              "Created a new section, Automation Upgrades.",
+              "Added a new currency, Automation Tokens or just Tokens for short.",
+              "Added the Exchange Upgrade, which allows you to convert Bitcoin to Tokens.",
+              "Created the Auto Upgrader, which automatically unlocks upgrades in the shop section.",
+              "Created the Auto Refresher, which automatically refreshes for you.",
+              "Created the Auto Rebirther, which automatically rebirthes for you.",
+              "Added various upgrades for the Auto Upgrader, Auto Refresher and Auto Rebirther.",
+              "Created a new Luck Upgrade, Critical Refresh Repeats which alllows you to improve your Critical Refresh Chance even further.",
+              "Added a new achievements system and new achievements to go with them.",
+              "Made achievements created with the old system port over to the new system.",
+              "Created new indicators to indicate how many coins, bitcoins and tokens you have on the shop pages where they are used.",
+              "Added Auto Upgrader and Auto Rebirther progress bars to the Shop and Rebirth pages respectively.",
+              "Added progress bars for the Auto Upgrader, Auto Refresher and Auto Rebirther to the Auto Upgrades page.",
+              "Added a slider for the Auto Upgrader, Auto Refresher and Auto Rebirther interval upgrades to change the actual interval seperate from the upgrade.",
+              "Various internal code changes.",
+              "Various Bugfixes.",
+            ],
+          },
+          {
+            name: 'Changelog Collapsibility Update',
+            description: 'Makes changelog entries collapsible.',
+            date: '11/01/2025',
+            version: 1,
+            major: 1,
+            minor: 2,
+            changes: [
+              "Fix the amount of bitcoins per rebirth not scaling properly with the money you have.",
+              "Permanently remove the reset button.",
+              "Make changelog entries collapsible.",
+              "Align changelog entry text to the left side of the screen.",
+              "Add a new achievement, Champion for reaching 55 rebirths.",
+            ]
+          },
+          {
+            name: 'Cost Reduction Patch',
+            description: 'Increases the cost scaling of upgrades because they were too cheap.',
+            date: '10/01/2025',
+            version: 1,
+            major: 1,
+            minor: 1,
+            changes: [
+              "Add a cost reduction rebirth upgrade.",
+              "Increase the cost scaling of upgrades.",
+              "Update upgrade tiers 11 to 15.",
+              "Permenently remove the reset button.",
+              "Fix a lot of issues relating to the cost reduction rebirth upgrade.",
+              "Accidentally reset my save game and be super sad : (",
+            ],
+          },
+          {
+            name: 'Changelog Update',
+            description: 'Adds the changelog to the game.',
+            date: '09/01/2025',
+            version: 1,
+            major: 1,
+            minor: 0,
+            changes: [
+              "Add the changelog.",
+              "Start logging update notes.",
+              "Make rebirths give you more bitcoins if you have more than enough coins for it.",
+              "Update upgrade tiers 7 to 10.",
+              "Decrease upgrade cost scaling.",
+              "Decrease rebirth cost scaling.",
+              "New UI elements to facilitate the bitcoin bonus feature.",
+            ],
+          }
+        ]
+      };
+
+      function getNewGameState() {
+        const gameState = {
+          totalReloads: 0,
+          totalScore: 0,
+          coins: 0,
+          coinsPerReload: 1,
+          coinsPerReloadMultiplier: 1,
+          criticalReloadUnlocked: false,
+          criticalReloadChance: 0,
+          criticalReloadMultiplier: 1,
+          criticalReloadRepeats: 1,
+          rebirthsUnlocked: false,
+          rebirths: 0,
+          bitcoins: 0,
+          bitcoinsPerRebirth: 1,
+          costReductionMultiplier: 1,
+          automationUnlocked: false,
+          exchanges: 0,
+          tokens: 0,
+          tokensPerExchange: 1,
+          autoUpgraderUnlocked: false,
+          autoUpgraderInterval: 25,
+          autoUpgraderMinInterval: 25,
+          autoUpgraderMaxTier: 3,
+          autoUpgraderUpgradeMultiplier: 1,
+          autoUpgraderTimer: 0,
+          autoUpgraderEnabled: false,
+          autoRefresherUnlocked: false,
+          autoRefresherInterval: 40,
+          autoRefresherMinInterval: 40,
+          autoRefresherRefreshMultiplier: 1,
+          autoRefresherCount: 1,
+          autoRefresherTimer: 0,
+          autoRefresherEnabled: false,
+          autoRebirtherUnlocked: false,
+          autoRebirtherInterval: 50,
+          autoRebirtherMinInterval: 50,
+          autoRebirtherRebirthMultiplier: 1,
+          autoRebirtherMaxBonus: 0,
+          autoRebirtherTimer: 0,
+          autoRebirtherEnabled: false,
+          upgrades: Array(GG_ALL_GAME_CONFIG.upgrades.length).fill(0),
+          luckUpgrades: Array(GG_ALL_GAME_CONFIG.luckUpgrades.length).fill(0),
+          rebirthUpgrades: Array(GG_ALL_GAME_CONFIG.rebirthUpgrades.length).fill(0),
+          autoUpgrades: Array(GG_ALL_GAME_CONFIG.autoUpgrades.length).fill(0),
+          achievements: Array(GG_ALL_GAME_CONFIG.achievements.length).fill(false),
+          settingDarkMode: false,
+          settingAlerts: true,
+          settingLargeFormOnly: false,
+          settingLargeMode: false,
+          sectionOpened: 'home',
+          userHandle: null,
+        };
+        return gameState;
+      }
+
+      function loadAnnouncement() {
+        document.getElementById('announcement').innerHTML = "New Update!<br/>Check out the changelog for more info by pressing the 🗒️ button.";
+      }
+
+      function initializeTopMenu() {
+        const topMenu = document.getElementById(`toggles`)
+        GG_ALL_GAME_CONFIG.sectionIds.forEach((sectionId, index) => {
+          const toggleButton = document.getElementById(`toggle-${sectionId}`)
+          switch (sectionId) {
+            case 'luck-upgrades':
+              if (gameState.rebirths >= 2) {
+                toggleButton.classList.remove('hidden');
+              } else {
+                toggleButton.classList.add('hidden');
+              }
+              break;
+            case 'rebirth':
+              if (gameState.rebirthsUnlocked || (gameState.coins >= 9999)) {
+                gameState.rebirthsUnlocked = true;
+                toggleButton.classList.remove('hidden');
+              } else {
+                toggleButton.classList.add('hidden');
+              }
+              break;
+            case 'auto-upgrades':
+              if (gameState.rebirths >= 4) {
+                toggleButton.classList.remove('hidden');
+              } else {
+                toggleButton.classList.add('hidden');
+              }
+              break;
+            default:
+              toggleButton.classList.remove('hidden');
+              break;
+          }
+        });
+        topMenu.classList.remove('hidden');
+      }
+
+      function formatNumber(number, largeForm) {
+        if (number >= 1e36) {
+          return number.toExponential(3); // Anything more than an undecillion.
+        } else if (number >= 1e33) {
+          return (number / 1e33).toFixed(2) + (largeForm ? ' Decillion' : 'Dc');
+        } else if (number >= 1e30) {
+          return (number / 1e30).toFixed(2) + (largeForm ? ' Nonillion' : 'No');
+        } else if (number >= 1e27) {
+          return (number / 1e27).toFixed(2) + (largeForm ? ' Octillion' : 'Oc');
+        } else if (number >= 1e24) {
+          return (number / 1e24).toFixed(2) + (largeForm ? ' Septillion' : 'Sp');
+        } else if (number >= 1e21) {
+          return (number / 1e21).toFixed(2) + (largeForm ? ' Sextillion' : 'Sx');
+        } else if (number >= 1e18) {
+          return (number / 1e18).toFixed(2) + (largeForm ? ' Quintillion' : 'Qi');
+        } else if (number >= 1e15) {
+          return (number / 1e15).toFixed(2) + (largeForm ? ' Quadrillion' : 'Qa');
+        } else if (number >= 1e12) {
+          return (number / 1e12).toFixed(2) + (largeForm ? ' Trillion' : 'T');
+        } else if (number >= 1e9) {
+          return (number / 1e9).toFixed(2) + (largeForm ? ' Billion' : 'B');
+        } else if (number >= 1e6) {
+          return (number / 1e6).toFixed(2) + (largeForm ? ' Million' : 'M');
+        } else if (number >= 1e3) {
+          return (number / 1e3).toFixed(2) + (largeForm ? ' Thousand' : 'K');
+        } else {
+          return number.toLocaleString("en-US");
+        }
+      }
+
+      function initializeChangelog() {
+        const changelogContainer = document.getElementById('changelogContainer');
+        if (!changelogContainer) return;
+        changelogContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.changelog.forEach((changeNotes, index) => {
+          const changeNotesDiv = document.createElement('div');
+          const versionNumber = changeNotes.version + "." + changeNotes.major + "." + changeNotes.minor
+          changeNotesDiv.id = `changeNotesDiv${index + 1}`;
+          changeNotesDiv.className = 'changeNotes';
+          changeNotesDiv.innerHTML = `
+<div class="changeNotesName"><h3><button class="changelogCollapsible ${index === 0 ? "open" : "closed"}">${versionNumber} - ${changeNotes.name}</button></h3></div>
+<div class="changeNotesContent changeNotesContents${index + 1}${index === 0 ? "" : " hidden"} "">
+<div class="changeNotesDescription">${changeNotes.description}</div>
+<div class="changeNotesDate">Date of Update: ${changeNotes.date}</div>
+<ul class="changeNotesChanges">
+${changeNotes.changes.map(changenote => `<li class="changeNotesChange">${changenote}</li>`).join('')}
+</ul>
+</div>
+`;
+          changelogContainer.appendChild(changeNotesDiv);
+        });
+        const changelogCollapsibles = document.getElementsByClassName("changelogCollapsible");
+        Array.from(changelogCollapsibles).forEach((collapsible, identifier) => {
+          collapsible.addEventListener("click", function() {
+            var content = this.parentNode.parentNode.nextElementSibling;
+            if (content.classList.contains('hidden')) {
+              content.classList.remove('hidden');
+              this.classList.add('open');
+              this.classList.remove('closed')
+            } else {
+              content.classList.add('hidden');
+              this.classList.remove('open');
+              this.classList.add('closed')
+            }
+          });
+        });
+      }
+
+      function initializeShop() {
+        const upgradesContainer = document.getElementById('upgradesContainer');
+        upgradesContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.upgrades.forEach((upgrade, index) => {
+          const baseIncrement = upgrade.increment * gameState.coinsPerReloadMultiplier;
+          const upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.upgrades[index]) * gameState.costReductionMultiplier);
+          const upgradeDiv = document.createElement('div');
+          upgradeDiv.id = `upgradeDiv${index + 1}`;
+          upgradeDiv.className = 'upgrade';
+          upgradeDiv.innerHTML = `
+<div>
+<div>${upgrade.name}</div>
+<div>${upgrade.description.replace('value', formatNumber(baseIncrement, gameState.settingLargeFormOnly))}</div>
+</div>
+<button id="upgrade${index + 1}" onclick="buyUpgrade(${index}, false)">Cost: $${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}</button>
+`;
+          upgradesContainer.appendChild(upgradeDiv);
+          if (gameState.rebirths < upgrade.rebirthsToUnlock) {
+            upgradeDiv.style.display = "none";
+          } else {
+            upgradeDiv.style.display = "flex";
+          }
+        });
+        const autoUpgraderProgress = document.getElementById('AutoUpgraderProgressShop');
+        if (!autoUpgraderProgress) {
+          return;
+        }
+        if (!gameState.autoUpgraderUnlocked) {
+          autoUpgraderProgress.style.display = "none";
+        } else {
+          autoUpgraderProgress.style.display = "flex";
+        }
+        const autoUpgraderUnlock = document.getElementById('AutoUpgraderUnlockShop');
+        if (!autoUpgraderUnlock) {
+          return;
+        }
+        if (!gameState.autoUpgraderUnlocked) {
+          autoUpgraderUnlock.style.display = "none";
+        } else {
+          autoUpgraderUnlock.style.display = "flex";
+        }
+      }
+
+      function initializeLuckUpgrades() {
+        const luckUpgradesContainer = document.getElementById('luckUpgradesContainer');
+        luckUpgradesContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.luckUpgrades.forEach((luckUpgrade, index) => {
+          let upgradeCost = Math.round(luckUpgrade.baseCost * (luckUpgrade.costIncrease ** gameState.luckUpgrades[index]) * gameState.costReductionMultiplier);
+          if (luckUpgrade.id == "chance") {
+            upgradeCost *= 2 ** gameState.criticalReloadRepeats;
+          }
+          const upgradeDiv = document.createElement('div');
+          upgradeDiv.id = `luckUpgradeDiv${index + 1}`;
+          upgradeDiv.className = 'upgrade';
+          upgradeDiv.innerHTML = `
+<div>
+<div>${luckUpgrade.name}</div>
+<div id="luckUpgradeDescription${index + 1}">${luckUpgrade.description}</div>
+</div>
+<button id="luckUpgrade${index + 1}" onclick="buyLuckUpgrade(${index}, false)">Cost: ${luckUpgrade.id == "repeat" ? "₿" : "$"}${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}</button>
+`;
+          if (gameState.rebirths < luckUpgrade.rebirthsToUnlock) {
+            upgradeDiv.style.display = "none";
+          } else {
+            upgradeDiv.style.display = "flex";
+          }
+          luckUpgradesContainer.appendChild(upgradeDiv);
+          switch (luckUpgrade.id) {
+            case 'chance':
+            case 'multiplier':
+              if (!gameState.criticalReloadUnlocked) {
+                upgradeDiv.style.display = "none";
+              }
+              break;
+            case 'repeat':
+              if ((!gameState.criticalReloadUnlocked) || (gameState.criticalReloadChance < 1)) {
+                upgradeDiv.style.display = "none";
+              }
+              break;
+          };
+          const criticalReloadRepeatsUnlock = document.getElementById('RepeatsUnlock');
+          if (!criticalReloadRepeatsUnlock) {
+            return;
+          }
+          if (gameState.criticalReloadRepeats <= 1) {
+            criticalReloadRepeatsUnlock.style.display = "none";
+          } else {
+            criticalReloadRepeatsUnlock.style.display = "flex";
+          }
+        });
+      }
+
+      function initializeRebirthUpgrades() {
+        const rebirthContainer = document.getElementById('rebirthContainer');
+        rebirthContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.rebirthUpgrades.forEach((rebirthUpgrade, index) => {
+          const upgradeCost = Math.round(rebirthUpgrade.baseCost * rebirthUpgrade.costIncrease ** gameState.rebirthUpgrades[index]);
+          const upgradeDiv = document.createElement('div');
+          upgradeDiv.id = `rebirthUpgradeDiv${index + 1}`;
+          upgradeDiv.className = 'upgrade';
+          upgradeDiv.innerHTML = `
+<div>
+<div>${rebirthUpgrade.name}</div>
+<div id="rebirthUpgradeDescription${index + 1}">Unknown</div>
+</div>
+<button id="rebirthUpgrade${index + 1}" onclick="buyRebirthUpgrade(${index}, false)">Unknown</button>
+`;
+          rebirthContainer.appendChild(upgradeDiv);
+          if (gameState.rebirths < rebirthUpgrade.rebirthsToUnlock) {
+            upgradeDiv.style.display = "none";
+          } else {
+            upgradeDiv.style.display = "flex";
+          }
+        });
+      }
+
+      function initializeAutoUpgrades() {
+        const autoUpgradesContainer = document.getElementById('autoUpgradesContainer');
+        autoUpgradesContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.autoUpgrades.forEach((autoUpgrade, index) => {
+          const upgradeCost = Math.round(autoUpgrade.baseCost * (autoUpgrade.CostIncrease ** gameState.autoUpgrades[index]));
+          if (autoUpgrade.id.includes('unlock')) {
+            const upgradeTypeSubHeader = document.createElement('h3');
+            upgradeTypeSubHeader.id = `autoUpgradeHeader${index + 1}`;
+            upgradeTypeSubHeader.className = 'upgradeTypeHeader';
+            upgradeTypeSubHeader.innerHTML = `${autoUpgrade.name} Upgrades`;
+            autoUpgradesContainer.appendChild(upgradeTypeSubHeader);
+            if ((gameState.rebirths < autoUpgrade.rebirthsToUnlock) || (autoUpgrade.id !== 'exchange' && gameState.exchanges < 1)) {
+              upgradeTypeSubHeader.style.display = "none";
+            } else {
+              upgradeTypeSubHeader.style.display = "flex";
+            }
+            const upgradeTypeProgress = document.createElement('div');
+            upgradeTypeProgress.id = `automationProgress${autoUpgrade.name.replace(/\s/g, '')}`;
+            upgradeTypeProgress.className = 'upgradeTypeProgress';
+            autoUpgradesContainer.appendChild(upgradeTypeProgress);
+            if (!gameState.autoUpgrades[index]) {
+              upgradeTypeProgress.style.display = "none";
+            } else {
+              upgradeTypeProgress.style.display = "flex";
+            }
+            const upgradeTypeBar = document.createElement('div');
+            upgradeTypeBar.id = `${autoUpgrade.name.toLowerCase()}`;
+            upgradeTypeBar.className = `upgradeTypeBar ${autoUpgrade.name.replace(/\s/g, '')}`;
+            upgradeTypeProgress.appendChild(upgradeTypeBar);
+            if (!gameState.autoUpgrades[index]) {
+              upgradeTypeBar.style.display = "none";
+            } else {
+              upgradeTypeBar.style.display = "flex";
+            }
+          }
+          const upgradeDiv = document.createElement('div');
+          upgradeDiv.id = `autoUpgradeDiv${index + 1}`;
+          upgradeDiv.className = 'upgrade';
+          upgradeDiv.innerHTML = `
+<div>
+<div>${autoUpgrade.name}</div>
+<div id="autoUpgradeDescription${index + 1}">Unknown</div>
+</div>
+<button id="autoUpgrade${index + 1}" onclick="buyAutoUpgrade(${index}, false)">Unknown</button>
+`;
+          autoUpgradesContainer.appendChild(upgradeDiv);
+          if ((gameState.rebirths < autoUpgrade.rebirthsToUnlock) || (autoUpgrade.id !== 'exchange' && gameState.exchanges < 1)) {
+            upgradeDiv.style.display = "none";
+          } else {
+            upgradeDiv.style.display = "flex";
+          }
+          switch (autoUpgrade.id) {
+            case 'auto-upgrade-interval':
+            case 'auto-upgrade-multiplier':
+            case 'auto-upgrade-max-tier':
+              if (!gameState.autoUpgraderUnlocked) {
+                upgradeDiv.style.display = "none";
+              }
+              break;
+            case 'auto-refresh-interval':
+            case 'auto-refresh-multiplier':
+            case 'auto-refresh-count':
+              if (!gameState.autoRefresherUnlocked) {
+                upgradeDiv.style.display = "none";
+              }
+              break;
+            case 'auto-rebirth-interval':
+            case 'auto-rebirth-multiplier':
+            case 'auto-rebirth-max-bonus':
+              if (!gameState.autoRebirtherUnlocked) {
+                upgradeDiv.style.display = "none";
+              }
+              break;
+          }
+          if (autoUpgrade.id.includes('interval')) {
+            const sliderCurrent = document.createElement('div');
+            sliderCurrent.id = `automationSliderCurrent${autoUpgrade.name.replace(/\s/g, '')}`;
+            sliderCurrent.className = `sliderCurrent sliderDisplay`;
+            autoUpgradesContainer.appendChild(sliderCurrent);
+            const intervalSlider = document.createElement('div');
+            intervalSlider.className = 'intervalSlider';
+            autoUpgradesContainer.appendChild(intervalSlider);
+            if (!gameState.autoUpgrades[index]) {
+              intervalSlider.style.display = "none";
+              sliderCurrent.style.display = "none";
+            } else {
+              intervalSlider.style.display = "flex";
+              sliderCurrent.style.display = "block";
+            }
+            const sliderMin = document.createElement('div');
+            sliderMin.id = `automationSliderMin${autoUpgrade.name.replace(/\s/g, '')}`;
+            sliderMin.className = `sliderMin sliderDisplay`;
+            const sliderMax = document.createElement('div');
+            sliderMax.id = `automationSliderMax${autoUpgrade.name.replace(/\s/g, '')}`;
+            sliderMax.className = `sliderMax sliderDisplay`;
+            sliderMax.textContent = '200s';
+            const slider = document.createElement('input');
+            slider.id = `automationSlider${autoUpgrade.name.replace(/\s/g, '')}`;
+            slider.className = 'slider';
+            slider.type = 'range';
+            switch (autoUpgrade.id) {
+              case 'auto-upgrade-interval':
+                sliderMin.textContent = `${gameState.autoUpgraderMinInterval}s`;
+                slider.min = gameState.autoUpgraderMinInterval.toString();
+                slider.oninput = function() {
+                  const thisCurrent = document.getElementById('automationSliderCurrentAutoUpgraderInterval');
+                  const max = 200;
+                  let value = Number(this.value);
+                  if (value > max) {
+                    value = max;
+                  }
+                  gameState.autoUpgraderInterval = value;
+                  thisCurrent.textContent = `Current interval: ${value.toFixed(1)}s`;
+                }
+                slider.value = gameState.autoUpgraderInterval.toString();
+                sliderCurrent.textContent = `Current interval: ${gameState.autoUpgraderInterval.toFixed(1)}s`;
+                slider.max = "200.5";
+                slider.step = "0.5";
+                break;
+              case 'auto-refresh-interval':
+                sliderMin.textContent = `${gameState.autoRefresherMinInterval}s`;
+                slider.min = gameState.autoRefresherMinInterval.toString();
+                slider.oninput = function() {
+                  const thisCurrent = document.getElementById('automationSliderCurrentAutoRefresherInterval');
+                  const max = 200;
+                  let value = Number(this.value);
+                  if (value > max) {
+                    value = max;
+                  }
+                  gameState.autoRefresherInterval = value;
+                  thisCurrent.textContent = `Current interval: ${value.toFixed(2)}s`;
+                }
+                slider.value = gameState.autoRefresherInterval.toString();
+                sliderCurrent.textContent = `Current interval: ${gameState.autoRefresherInterval.toFixed(2)}s`;
+                slider.max = "200.25";
+                slider.step = "0.25";
+                break;
+              case 'auto-rebirth-interval':
+                sliderMin.textContent = `${gameState.autoRebirtherMinInterval}s`;
+                slider.min = gameState.autoRebirtherMinInterval.toString();
+                slider.oninput = function() {
+                  const thisCurrent = document.getElementById('automationSliderCurrentAutoRebirtherInterval');
+                  const max = 200;
+                  let value = Number(this.value);
+                  if (value > max) {
+                    value = max;
+                  }
+                  gameState.autoRebirtherInterval = value;
+                  thisCurrent.textContent = `Current interval: ${value.toFixed(2)}s`;
+                }
+                slider.value = gameState.autoRebirtherInterval.toString();
+                sliderCurrent.textContent = `Current interval: ${gameState.autoRebirtherInterval.toFixed(2)}s`;
+                slider.max = "200.25";
+                slider.step = "0.25";
+                break;
+            }
+            intervalSlider.appendChild(sliderMin);
+            intervalSlider.appendChild(slider);
+            intervalSlider.appendChild(sliderMax);
+          }
+        })
+      }
+
+      function initializeAchievements() {
+        const achievementsContainer = document.getElementById('achievementsContainer');
+        achievementsContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.achievements.forEach((achievement, index) => {
+          const achievementDiv = document.createElement('div');
+          achievementDiv.id = `achievementDiv${index + 1}`;
+          achievementDiv.className = 'achievement';
+          const completed = gameState.achievements[index] ? '✅' : '❌';
+          let processedName = achievement.name;
+          processedName = processedName.replace('RO', '<span class="roman">');
+          if (processedName.includes('<span class="roman">')) {
+            processedName += '</span>';
+          }
+          achievementDiv.innerHTML = `
+<div>
+<div>${processedName} ${completed}</div>
+<div id="achievementDescription${index + 1}">${achievement.description}</div>
+</div>
+`;
+          achievementsContainer.appendChild(achievementDiv);
+          achievementDiv.style.display = GG_ALL_GAME_CONFIG.achievements[index].display(gameState) ? "block" : "none";
+        });
+      }
+
+      function updateScore() {
+        const baseIncrement = gameState.coinsPerReload * gameState.coinsPerReloadMultiplier;
+        document.getElementById('coins').textContent = `$${formatNumber(gameState.coins, true)}`;
+        document.getElementById('increment').textContent = `$${formatNumber(baseIncrement, true)} per refresh`;
+        updateUpgradeButtons();
+        updateAchievements();
+        initializeAchievements();
+        saveScore(gameState.totalScore, '', gameState.totalReloads);
+      }
+
+      function updateAchievements() {
+        GG_ALL_GAME_CONFIG.achievements.forEach((achievement, index) => {
+          gameState.achievements[index] = achievement.requirement(gameState) || gameState.achievements[index];
+        });
+        initializeAchievements();
+      }
+
+      function updateAutoUpgrades(DT) {
+        if (gameState.autoUpgraderUnlocked) {
+          if (gameState.autoUpgraderEnabled) {
+            gameState.autoUpgraderTimer += DT / 1000;
+          }
+          const autoUpgraderBars = Array.from(document.getElementsByClassName("AutoUpgrader"));
+          if (autoUpgraderBars) {
+            autoUpgraderBars.forEach(progressBar => {
+              if (!progressBar) {
+                return;
+              }
+              progressBar.style.width = ((gameState.autoUpgraderTimer / gameState.autoUpgraderInterval) * 100) + "%";
+            });
+          }
+        }
+        if (gameState.autoRefresherUnlocked) {
+          if (gameState.autoRefresherEnabled) {
+            gameState.autoRefresherTimer += DT / 1000;
+          }
+          const autoRefresherBars = Array.from(document.getElementsByClassName("AutoRefresher"));
+          if (autoRefresherBars) {
+            autoRefresherBars.forEach(progressBar => {
+              if (!progressBar) {
+                return;
+              }
+              progressBar.style.width = ((gameState.autoRefresherTimer / gameState.autoRefresherInterval) * 100) + "%";
+            });
+          }
+        }
+        if (gameState.autoRebirtherUnlocked) {
+          if (gameState.autoRebirtherEnabled) {
+            gameState.autoRebirtherTimer += DT / 1000;
+          }
+          const autoRebirtherBars = Array.from(document.getElementsByClassName("AutoRebirther"));
+          if (autoRebirtherBars) {
+            autoRebirtherBars.forEach(progressBar => {
+              if (!progressBar) {
+                return;
+              }
+              progressBar.style.width = ((gameState.autoRebirtherTimer / gameState.autoRebirtherInterval) * 100) + "%";
+            });
+          }
+        }
+        if (gameState.autoUpgraderTimer >= gameState.autoUpgraderInterval) {
+          gameState.autoUpgraderTimer -= gameState.autoUpgraderInterval;
+          for (let i = gameState.autoUpgraderMaxTier; i > 0; i--) {
+            const upgrade = GG_ALL_GAME_CONFIG.upgrades[i - 1]
+            let index = i - 1
+            const upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.upgrades[i - 1]) * gameState.costReductionMultiplier);
+            if (gameState.coins >= upgradeCost && gameState.upgrades[i - 1] < upgrade.max_level) {
+              gameState.coins -= upgradeCost
+              for (let j = 0; j < gameState.autoUpgraderUpgradeMultiplier; j++) {
+                buyUpgrade(index, true)
+              }
+              break;
+            }
+          }
+        }
+        if (gameState.autoRefresherTimer >= gameState.autoRefresherInterval) {
+          if (gameState.autoRefresherCount < 1) {
+            gameState.autoRefresherCount = 1;
+          }
+          gameState.autoRefresherTimer -= gameState.autoRefresherInterval;
+          for (let i = 0; i < gameState.autoRefresherCount; i++) {
+            Refresh(gameState.autoRefresherRefreshMultiplier, true);
+          }
+        }
+        if (gameState.autoRebirtherTimer >= gameState.autoRebirtherInterval) {
+          gameState.autoUpgraderTimer -= gameState.autoRebirtherInterval
+          const upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.rebirthUpgrades[upgradeIndex]) * gameState.costReductionMultiplier);
+          if (gameState.coins >= upgradeCost) {
+            doRebirth(upgradeCost, gameState.autoRebirtherRebirthMultiplier, gameState.autoRebirtherMaxBonus);
+          }
+        }
+      }
+
+      function updateUpgradeButtons() {
+        // upgrades
+        GG_ALL_GAME_CONFIG.upgrades.forEach((upgrade, index) => {
+          const button = document.getElementById(`upgrade${index + 1}`);
+          const maxLevel = GG_ALL_GAME_CONFIG.upgrades[index].max_level;
+          const maxLevelReached = (gameState.upgrades[index] >= maxLevel);
+          const upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.upgrades[index]) * gameState.costReductionMultiplier);
+          button.disabled = (gameState.coins < upgradeCost);
+          if (maxLevelReached) {
+            button.disabled = true;
+            switch (maxLevel) {
+              case 0:
+                button.textContent = 'Not implemented';
+                break;
+              case 1:
+                button.textContent = 'Unlocked';
+                break;
+              default:
+                button.textContent = 'Max level';
+                break;
+            }
+          } else {
+            button.textContent = `Cost: $${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}`;
+          }
+        });
+        // luckUpgrades
+        GG_ALL_GAME_CONFIG.luckUpgrades.forEach((upgrade, index) => {
+          const button = document.getElementById(`luckUpgrade${index + 1}`);
+          const maxLevel = GG_ALL_GAME_CONFIG.luckUpgrades[index].max_level;
+          const maxLevelReached = (gameState.luckUpgrades[index] >= maxLevel || (upgrade.id == "chance" && gameState.criticalReloadChance >= gameState.criticalReloadRepeats) || (upgrade.id == "repeat" && gameState.criticalReloadRepeats > gameState.criticalReloadChance));
+          let upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.luckUpgrades[index]) * gameState.costReductionMultiplier);
+          if (upgrade.id == "chance") {
+            upgradeCost *= 2 ** gameState.criticalReloadRepeats;
+          }
+          button.disabled = (gameState.coins < upgradeCost);
+          if (maxLevelReached) {
+            button.disabled = true;
+            switch (maxLevel) {
+              case 0:
+                button.textContent = 'Not implemented';
+                break;
+              case 1:
+                button.textContent = 'Unlocked';
+                break;
+              default:
+                button.textContent = 'Max level';
+                break;
+            }
+          } else {
+            button.textContent = `Cost: $${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}`;
+          }
+          const upgradeDiv = document.getElementById(`luckUpgradeDiv${index + 1}`);
+          if (gameState.criticalReloadUnlocked && upgrade.id != "repeat") {
+            upgradeDiv.style.display = "flex";
+          } else if (gameState.criticalReloadUnlocked && gameState.criticalReloadChance >= 1 && upgrade.id == "repeat") {
+            upgradeDiv.style.display = "flex";
+          }
+          const upgradeDescription = document.getElementById(`luckUpgradeDescription${index + 1}`);
+          switch (upgrade.id) {
+            case 'chance':
+              upgradeDescription.textContent = upgrade.description.replace('value', Math.round(gameState.criticalReloadChance * 10000) / 100);
+              break;
+            case 'multiplier':
+              upgradeDescription.textContent = upgrade.description.replace('value', formatNumber(gameState.criticalReloadMultiplier, gameState.settingLargeFormOnly));
+              break;
+            case 'repeat':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.criticalReloadRepeats);
+          }
+        });
+        // rebirthUpgrades
+        GG_ALL_GAME_CONFIG.rebirthUpgrades.forEach((upgrade, index) => {
+          if (gameState.bitcoins === null) {
+            gameState.bitcoins = 0;
+          }
+          const upgradeDescription = document.getElementById(`rebirthUpgradeDescription${index + 1}`);
+          let upgradeCost;
+          if (upgrade.id === 'rebirth') {
+            upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.rebirthUpgrades[index]) * gameState.costReductionMultiplier);
+          } else {
+            upgradeCost = Math.round(upgrade.baseCost * upgrade.costIncrease ** gameState.rebirthUpgrades[index]);
+          }
+          switch (upgrade.id) {
+            case 'rebirth':
+              let rebirthBitcoins = gameState.bitcoinsPerRebirth * Math.floor(gameState.coins / upgradeCost)
+              let bitcoinPercentage = Math.floor(((gameState.coins / upgradeCost) % 1) * 100)
+              let description = upgrade.description
+              if (rebirthBitcoins < gameState.bitcoinsPerRebirth) {
+                rebirthBitcoins = gameState.bitcoinsPerRebirth
+                description = upgrade.description.split("<br>").shift()
+              } else {
+                description = upgrade.description.split("<br>").join()
+              }
+              upgradeDescription.textContent = description.replace('value', formatNumber(Math.floor(rebirthBitcoins), gameState.settingLargeFormOnly)).replace('btc', (formatNumber(gameState.bitcoins, gameState.settingLargeFormOnly)), gameState.settingLargeFormOnly).replace('nextbtc', bitcoinPercentage).replace('btcper', formatNumber(gameState.bitcoinsPerRebirth, gameState.settingLargeFormOnly));
+              break;
+            case 'bitcoins-per-rebirth':
+              let increment = Math.max(Math.floor(gameState.bitcoinsPerRebirth * 1.25), gameState.bitcoinsPerRebirth + 1) - gameState.bitcoinsPerRebirth;
+              upgradeDescription.textContent = upgrade.description.replace('value', formatNumber(gameState.bitcoinsPerRebirth, gameState.settingLargeFormOnly)).replace('inc', formatNumber(increment, gameState.settingLargeFormOnly));
+              break;
+            case 'profit-multiplier':
+              upgradeDescription.textContent = upgrade.description.replace('value', formatNumber(gameState.coinsPerReloadMultiplier, gameState.settingLargeFormOnly));
+              break;
+            case 'cost-reduction':
+              upgradeDescription.textContent = upgrade.description.replace('value', Math.round((1 - (gameState.costReductionMultiplier || 1)) * 10000) / 100)
+          }
+          const button = document.getElementById(`rebirthUpgrade${index + 1}`);
+          const maxLevel = GG_ALL_GAME_CONFIG.rebirthUpgrades[index].max_level;
+          const maxLevelReached = (gameState.rebirthUpgrades[index] >= maxLevel);
+          if (maxLevelReached) {
+            button.disabled = true;
+            switch (maxLevel) {
+              case 0:
+                button.textContent = 'Not implemented';
+                break;
+              case 1:
+                button.textContent = 'Unlocked';
+                break;
+              default:
+                button.textContent = 'Max level';
+                break;
+            }
+          } else {
+            switch (upgrade.id) {
+              case 'rebirth':
+                button.textContent = `Cost: $${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}`;
+                button.disabled = (gameState.coins < upgradeCost);
+                break;
+              default:
+                button.textContent = `Cost: ${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}₿`;
+                button.disabled = (gameState.bitcoins < upgradeCost);
+                break;
+            }
+          }
+        });
+        // autoUpgrades
+        if (gameState.autoUpgraderInterval < gameState.autoUpgraderMinInterval) {
+          gameState.autoUpgraderMinInterval = gameState.autoUpgraderInterval;
+        }
+        if (gameState.autoRefresherInterval < gameState.autoRefresherMinInterval) {
+          gameState.autoRefresherMinInterval = gameState.autoRefresherInterval;
+        }
+        if (gameState.autoRebirtherInterval < gameState.autoRebirtherMinInterval) {
+          gameState.autoRebirtherMinInterval = gameState.autoRebirtherInterval;
+        }
+        if (gameState.autoUpgrades[4] > gameState.autoUpgraderUpgradeMultiplier - 1) {
+          gameState.autoUpgraderUpgradeMultiplier = gameState.autoUpgrades[4] + 1;
+        }
+        GG_ALL_GAME_CONFIG.autoUpgrades.forEach((upgrade, index) => {
+          if (gameState.tokens === null) {
+            gameState.tokens = 0;
+          }
+          if (gameState.tokensPerExchange === null) {
+            gameState.tokensPerExchange = 1;
+          }
+          const upgradeDescription = document.getElementById(`autoUpgradeDescription${index + 1}`);
+          let upgradeCost;
+          if (upgrade.id === 'exchange') {
+            upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.autoUpgrades[index]) * (1.125 ** gameState.rebirths) * (0.999 ** gameState.totalReloads));
+          } else {
+            upgradeCost = Math.round(upgrade.baseCost * upgrade.costIncrease ** gameState.autoUpgrades[index]);
+          }
+          switch (upgrade.id) {
+            case 'exchange':
+              upgradeDescription.textContent = upgrade.description.replace('value', 1).replace('tokenT', formatNumber(gameState.tokens, gameState.settingLargeFormOnly) + 'T')
+              break;
+            case 'auto-upgrade-unlock':
+            case 'auto-refresh-unlock':
+            case 'auto-rebirth-unlock':
+              upgradeDescription.textContent = upgrade.description;
+              break;
+            case 'auto-upgrade-interval':
+              if (!gameState.autoUpgraderInterval) {
+                gameState.autoUpgraderInterval = 25
+              }
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoUpgraderMinInterval);
+              break;
+            case 'auto-upgrade-max-tier':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoUpgraderMaxTier);
+              break;
+            case 'auto-upgrade-multiplier':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoUpgraderUpgradeMultiplier);
+              break;
+            case 'auto-refresh-interval':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoRefresherMinInterval);
+              break;
+            case 'auto-refresh-multiplier':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoRefresherRefreshMultiplier);
+              break;
+            case 'auto-refresh-count':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoRefresherCount);
+              break;
+            case 'auto-rebirth-interval':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoRebirtherMinInterval);
+              break;
+            case 'auto-rebirth-multiplier':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoRebirtherRebirthMultiplier);
+              break;
+            case 'auto-rebirth-max-bonus':
+              upgradeDescription.textContent = upgrade.description.replace('value', gameState.autoRebirtherMaxBonus);
+              break;
+          }
+          const button = document.getElementById(`autoUpgrade${index + 1}`);
+          const maxLevel = GG_ALL_GAME_CONFIG.autoUpgrades[index].max_level;
+          let maxLevelReached = (gameState.autoUpgrades[index] >= maxLevel);
+          if (maxLevelReached) {
+            button.disabled = true;
+            switch (maxLevel) {
+              case 0:
+                button.textContent = 'Not implemented';
+                break;
+              case 1:
+                switch (upgrade.id) {
+                  case 'auto-upgrade-unlock':
+                    button.textContent = gameState.autoUpgraderEnabled ? "Enabled" : "Disabled";
+                    button.disabled = false;
+                    break;
+                  case 'auto-refresh-unlock':
+                    button.textContent = gameState.autoRefresherEnabled ? "Enabled" : "Disabled";
+                    button.disabled = false;
+                    break;
+                  case 'auto-rebirth-unlock':
+                    button.textContent = gameState.autoRebirtherEnabled ? "Enabled" : "Disabled";
+                    button.disabled = false;
+                    break;
+                  default:
+                    button.textContent = 'Unlocked';
+                }
+                break;
+              default:
+                button.textContent = 'Max level';
+                break;
+            }
+          } else {
+            switch (upgrade.id) {
+              case 'exchange':
+                button.textContent = `Cost: ${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}₿`;
+                button.disabled = (gameState.bitcoins < upgradeCost);
+                break;
+              default:
+                button.textContent = `Cost: ${formatNumber(upgradeCost, gameState.settingLargeFormOnly)}T`;
+                button.disabled = (gameState.tokens < upgradeCost);
+                break;
+            }
+          }
+        });
+        // Currencies
+        const coins = Array.from(document.getElementsByClassName('coins'));
+        coins.forEach(coinsDiv => {
+          coinsDiv.textContent = "$" + formatNumber(gameState.coins, true);
+        });
+        const coinsIncrement = Array.from(document.getElementsByClassName('coinsIncrement'));
+        coinsIncrement.forEach(coinsIncrementDiv => {
+          coinsIncrementDiv.textContent = "$" + formatNumber(gameState.coinsPerReload * gameState.coinsPerReloadMultiplier, true) + " per refresh";
+        })
+        const bitcoins = Array.from(document.getElementsByClassName('bitcoins'));
+        bitcoins.forEach(bitcoinsDiv => {
+          bitcoinsDiv.textContent = formatNumber(gameState.bitcoins, true) + "₿";
+        });
+        const bitcoinsIncrement = Array.from(document.getElementsByClassName('bitcoinsIncrement'));
+        bitcoinsIncrement.forEach(bitcoinsIncrementDiv => {
+          bitcoinsIncrementDiv.textContent = formatNumber(gameState.bitcoinsPerRebirth, true) + "₿ per rebirth";
+        })
+        const tokens = Array.from(document.getElementsByClassName('tokens'));
+        tokens.forEach(tokensDiv => {
+          tokensDiv.textContent = formatNumber(gameState.tokens, true) + "T";
+        });
+        const tokensIncrement = Array.from(document.getElementsByClassName('tokensIncrement'));
+        tokensIncrement.forEach(tokensIncrementDiv => {
+          tokensIncrementDiv.textContent = formatNumber(gameState.tokensPerExchange, true) + "T per exchange";
+        })
+      }
+
+      function buyUpgrade(upgradeIndex, override) {
+        const upgrade = GG_ALL_GAME_CONFIG.upgrades[upgradeIndex];
+        const upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.upgrades[upgradeIndex]) * gameState.costReductionMultiplier);
+        if (!override) {
+          if (gameState.coins < upgradeCost) return;
+          gameState.coins -= upgradeCost;
+        }
+        gameState.coinsPerReload += upgrade.increment;
+        gameState.upgrades[upgradeIndex]++;
+        gameState.achievements[1] = true;
+        document.getElementById(`upgrade${upgradeIndex + 1}`).textContent = `Cost: $${upgradeCost.toLocaleString("en-US")}`;
+        updateScore();
+        saveGame();
+      }
+
+      function buyLuckUpgrade(upgradeIndex, override) {
+        const upgrade = GG_ALL_GAME_CONFIG.luckUpgrades[upgradeIndex];
+        let upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.luckUpgrades[upgradeIndex]) * gameState.costReductionMultiplier);
+        if (upgrade.id == "chance") {
+          upgradeCost *= 2 ** gameState.criticalReloadRepeats;
+        }
+        if (!override) {
+          if (gameState.coins < upgradeCost) return;
+          gameState.coins -= upgradeCost;
+        }
+        switch (upgrade.id) {
+          case 'unlock':
+            gameState.criticalReloadUnlocked = true;
+            gameState.criticalReloadChance = 0.05;
+            gameState.criticalReloadMultiplier = 2;
+            break;
+          case 'chance':
+            gameState.criticalReloadChance = Math.round((gameState.criticalReloadChance + 0.01) * 10000) / 10000;
+            break;
+          case 'multiplier':
+            gameState.criticalReloadMultiplier = Math.round((gameState.criticalReloadMultiplier + 0.5) * 10) / 10;
+            break;
+          case 'repeat':
+            gameState.criticalReloadRepeats += 1
+        }
+        gameState.luckUpgrades[upgradeIndex]++;
+        document.getElementById(`luckUpgrade${upgradeIndex + 1}`).textContent = `Cost: $${upgradeCost.toLocaleString("en-US")}`;
+        saveGame();
+        updateScore();
+      }
+
+      function buyRebirthUpgrade(upgradeIndex, override) {
+        const upgrade = GG_ALL_GAME_CONFIG.rebirthUpgrades[upgradeIndex];
+        if (upgrade.id === 'rebirth') {
+          const upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.rebirthUpgrades[upgradeIndex]) * gameState.costReductionMultiplier);
+          if (gameState.coins < upgradeCost) return;
+          doRebirth(upgradeCost, 1, -1);
+          return;
+        }
+        const upgradeCost = Math.round(upgrade.baseCost * upgrade.costIncrease ** gameState.rebirthUpgrades[upgradeIndex]);
+        if (!override) {
+          if (gameState.bitcoins < upgradeCost) return;
+          gameState.bitcoins -= upgradeCost;
+        }
+        gameState.rebirthUpgrades[upgradeIndex]++;
+        switch (upgrade.id) {
+          case 'bitcoins-per-rebirth':
+            gameState.bitcoinsPerRebirth = Math.max(Math.floor(gameState.bitcoinsPerRebirth * 1.25), gameState.bitcoinsPerRebirth + 1);
+            break;
+          case 'profit-multiplier':
+            gameState.coinsPerReloadMultiplier += 1;
+            break;
+          case 'cost-reduction':
+            if (gameState.costReductionMultiplier === null) {
+              gameState.costReductionMultiplier = 1
+            }
+            if (gameState.costReductionMultiplier - 0.001 > 0.5) {
+              gameState.costReductionMultiplier -= 0.001;
+            } else if (gameState.costReductionMultiplier - 0.0005 > 0.25) {
+              gameState.costReductionMultiplier -= 0.0005;
+            } else if (gameState.costReductionMultiplier - 0.0001 > 0) {
+              gameState.costReductionMultiplier -= 0.0001;
+            } else if (gameState.costReductionMultiplier - 0.0001 <= 0) {
+              gameState.bitcoins += upgradeCost;
+              gameState.rebirthUpgrades[upgradeIndex]--;
+              showDialog("You cannot upgrade the cost reduction multiplier any further.\nAny spent bitcoins have been refunded.");
+            }
+            break;
+        }
+        saveGame();
+        updateScore();
+      }
+
+      function buyAutoUpgrade(upgradeIndex, override) {
+        const upgrade = GG_ALL_GAME_CONFIG.autoUpgrades[upgradeIndex];
+        let upgradeCost;
+        if (upgrade.id === 'exchange') {
+          upgradeCost = Math.round(upgrade.baseCost * (upgrade.costIncrease ** gameState.autoUpgrades[upgradeIndex]) * (1.125 ** gameState.rebirths) * (0.999 ** gameState.totalReloads));
+          if (!override) {
+            if (gameState.bitcoins < upgradeCost) return;
+            gameState.bitcoins -= upgradeCost;
+          }
+        } else {
+          upgradeCost = Math.round(upgrade.baseCost * upgrade.costIncrease ** gameState.autoUpgrades[upgradeIndex]);
+          if (!(
+              (override) ||
+              (upgrade.id == "auto-upgrade-unlock" && gameState.autoUpgraderUnlocked) ||
+              (upgrade.id == "auto-refresh-unlock" && gameState.autoRefresherUnlocked) ||
+              (upgrade.id == "auto-rebirth-unlock" && gameState.autoRebirtherUnlocked)
+            )) {
+            if (gameState.tokens < upgradeCost) return;
+            gameState.tokens -= upgradeCost;
+          }
+        }
+        gameState.autoUpgrades[upgradeIndex]++;
+        switch (upgrade.id) {
+          case 'exchange':
+            if (!gameState.tokens) {
+              gameState.tokens = 0;
+            }
+            gameState.tokens += gameState.tokensPerExchange;
+            gameState.exchanges += 1;
+            break;
+          case 'auto-upgrade-unlock':
+            gameState.autoUpgraderUnlocked = true;
+            gameState.autoUpgraderEnabled = !gameState.autoUpgraderEnabled;
+            break;
+          case 'auto-upgrade-interval':
+            if (gameState.autoUpgraderInterval == gameState.autoUpgraderMinInterval) {
+              gameState.autoUpgraderInterval -= 0.5;
+            }
+            gameState.autoUpgraderMinInterval -= 0.5;
+            break;
+          case 'auto-upgrade-max-tier':
+            gameState.autoUpgraderMaxTier += 1;
+            break;
+          case 'auto-upgrade-multiplier':
+            gameState.autoUpgraderUpgradeMultiplier += 1;
+            break;
+          case 'auto-refresh-unlock':
+            gameState.autoRefresherUnlocked = true;
+            gameState.autoRefresherEnabled = !gameState.autoRefresherEnabled;
+            break;
+          case 'auto-refresh-interval':
+            if (gameState.autoRefresherInterval == gameState.autoRefresherMinInterval) {
+              gameState.autoRefresherInterval -= 0.25;
+            }
+            gameState.autoRefresherMinInterval -= 0.25;
+            break;
+          case 'auto-refresh-multiplier':
+            gameState.autoRefresherRefreshMultiplier += 1;
+            break;
+          case 'auto-refresh-count':
+            gameState.autoRefresherCount += 1;
+          case 'auto-rebirth-unlock':
+            gameState.autoRebirtherUnlocked = true;
+            gameState.autoRebirtherEnabled = !gameState.autoRebirtherEnabled;
+            break;
+          case 'auto-rebirth-interval':
+            if (gameState.autoRebirtherInterval == gameState.autoRebirtherMinInerval) {
+              gameState.autoRebirtherInterval -= 0.25;
+            }
+            gameState.autoRebirtherMinInterval -= 0.25;
+            break;
+          case 'auto-rebirth-multiplier':
+            gameState.autoRebirtherRebirthMutliplier += 1;
+          case 'auto-rebirth-max-bonus':
+            gameState.autoRebirtherMaxBonus += 1;
+        }
+        saveGame();
+        updateScore();
+        initializeShop();
+        initializeLuckUpgrades();
+        initializeRebirthUpgrades();
+        initializeAutoUpgrades();
+        initializeTopMenu();
+        updateAchievements();
+        updateUpgradeButtons();
+      }
+
+      function doRebirth(cost, multiplier, maxBonus) {
+        let coins = gameState.coins
+        gameState.rebirthUpgrades[0]++;
+        gameState = {
+          ...gameState,
+          coins: 0,
+          coinsPerReload: 1,
+          criticalReloadUnlocked: false,
+          criticalReloadChance: 0,
+          criticalReloadMultiplier: 1,
+          criticalReloadRepeats: 1,
+          rebirths: gameState.rebirths + 1,
+          bitcoins: gameState.bitcoins + Math.floor(gameState.bitcoinsPerRebirth * (maxBonus <= -1 ? Math.floor(coins / cost) : Math.min(Math.floor(coins / cost), maxBonus)) * multiplier),
+          upgrades: Array(GG_ALL_GAME_CONFIG.upgrades.length).fill(0),
+          luckUpgrades: Array(GG_ALL_GAME_CONFIG.luckUpgrades.length).fill(0)
+        };
+        gameState.achievements[2] = true;
+        saveGame();
+        updateScore();
+        if (gameState.rebirths % 3 === 2) {
+          AskUpvote();
+        }
+        if (gameState.rebirths === 1) {
+          showDialog('Reinitilising all shop interfaces...')
+        }
+        initializeShop();
+        initializeLuckUpgrades();
+        initializeRebirthUpgrades();
+        initializeAutoUpgrades();
+        initializeAchievements();
+        initializeTopMenu();
+        updateUpgradeButtons();
+      }
+
+      function initializeSettings() {
+        const settingsContainer = document.getElementById('settingsContainer');
+        settingsContainer.innerHTML = '';
+        GG_ALL_GAME_CONFIG.settings.forEach((setting, index) => {
+          const settingDiv = document.createElement('div');
+          settingDiv.id = `settingDiv${index + 1}`;
+          settingDiv.className = 'setting';
+          settingDiv.innerHTML = `
+<div>
+<div>${setting.name}</div>
+<div>${setting.description}</div>
+</div>
+<button id="settingButton${index + 1}" onclick="${setting.buttonAction}">${setting.buttonText}</button>
+`;
+          settingsContainer.appendChild(settingDiv);
+          const settingButton = document.getElementById(`settingButton${index + 1}`);
+          if (setting.id === 'reset') {
+            settingButton.classList.add('reset-button');
+          }
+        });
+      }
+
+      function toggleDarkMode() {
+        if (gameState.settingDarkMode) {
+          document.body.classList.remove('dark-mode');
+          gameState.settingDarkMode = false;
+          showDialog('Dark mode turned off');
+        } else {
+          document.body.classList.add('dark-mode');
+          gameState.settingDarkMode = true;
+          showDialog('Dark mode turned on');
+        }
+        saveGame();
+      }
+
+      function toggleAlerts() {
+        if (gameState.settingAlerts) {
+          gameState.settingAlerts = false;
+          dialog('Alerts turned off');
+        } else {
+          gameState.settingAlerts = true;
+          dialog('Alerts turned on');
+        }
+        saveGame();
+      }
+
+      function toggleLFO() {
+        if (gameState.settingLargeFormOnly) {
+          gameState.settingLargeFormOnly = false;
+          showDialog('Large Form Only turned off');
+        } else {
+          gameState.settingLargeFormOnly = true;
+          showDialog('Large Form Only turned on');
+        }
+        saveGame();
+        updateUpgradeButtons();
+        requestLeaderboard();
+      }
+
+      function toggleLargeMode() {
+        if (gameState.settingLargeMode) {
+          document.body.classList.remove('large-mode');
+          gameState.settingLargeMode = false;
+          showDialog('Large mode turned off');
+        } else {
+          document.body.classList.add('large-mode');
+          gameState.settingLargeMode = true;
+          showDialog('Large mode turned on');
+        }
+        saveGame();
+      }
+
+      function showAlert(arg) {
+        if (gameState.settingAlerts) {
+          alert(arg);
+        }
+      }
+
+      function showDialog(message) {
+        if (gameState.settingAlerts) {
+          dialog(message)
+        }
+      }
+
+      function dialog(message) {
+        const popup = document.createElement('div');
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.backgroundColor = 'white';
+        popup.style.padding = '20px';
+        popup.style.borderRadius = '10px';
+        popup.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+        popup.style.zIndex = '1000';
+        popup.style.textAlign = 'center';
+        popup.style.fontFamily = 'Arial, sans-serif';
+        const messagetext = document.createElement('p');
+        messagetext.textContent = message;
+        messagetext.style.margin = '0 0 15px 0';
+        messagetext.style.fontSize = '16px';
+        messagetext.style.color = '#333';
+        const okButton = document.createElement('button');
+        okButton.textContent = 'OK';
+        okButton.style.padding = '8px 20px';
+        okButton.style.backgroundColor = '#4CAF50';
+        okButton.style.color = 'white';
+        okButton.style.border = 'none';
+        okButton.style.borderRadius = '5px';
+        okButton.style.cursor = 'pointer';
+        okButton.style.fontSize = '14px';
+        okButton.addEventListener('mouseover', () => {
+          okButton.style.backgroundColor = '#45a049';
+        });
+        okButton.addEventListener('mouseout', () => {
+          okButton.style.backgroundColor = '#4CAF50';
+        });
+        okButton.addEventListener('click', () => {
+          document.body.removeChild(popup);
+        });
+        popup.appendChild(messagetext);
+        popup.appendChild(okButton);
+        document.body.appendChild(popup);
+      }
+
+      function synchronizeUpgrades() {
+        let coinsPerReload = 1;
+        GG_ALL_GAME_CONFIG.upgrades.forEach((upgrade, index) => {
+          coinsPerReload += (upgrade.increment * gameState.upgrades[index]);
+        });
+        gameState.coinsPerReload = coinsPerReload;
+      }
+
+      function openSection(elementId) {
+        if (gameState.sectionOpened === "all") {
+          saveGame();
+          return
+        }
+        gameState.sectionOpened = elementId;
+        GG_ALL_GAME_CONFIG.sectionIds.forEach(sectionId => {
+          const section = document.getElementById(sectionId);
+          const sectionButton = document.getElementById(`toggle-${sectionId}`);
+          if (sectionId === elementId) {
+            section.classList.remove('hidden');
+            if (section.classList.contains('hidden')) {
+              sectionButton.classList.toggle('open');
+              sectionButton.classList.add('closed');
+            } else {
+              sectionButton.classList.add('open');
+              sectionButton.classList.remove('closed');
+            }
+          } else {
+            section.classList.add('hidden');
+            sectionButton.classList.remove('open');
+            sectionButton.classList.add('closed');
+          }
+        });
+        saveGame();
+      }
+
+      function openAllSections() {
+        var allOpen = (gameState.sectionOpened === "all");
+        const toggleAllButton = document.getElementById('toggle-all');
+        if (allOpen) {
+          allOpen = false;
+          gameState.sectionOpened = "home";
+          toggleAllButton.classList.remove('open');
+          toggleAllButton.classList.add('closed');
+          GG_ALL_GAME_CONFIG.sectionIds.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            const sectionButton = document.getElementById(`toggle-${sectionId}`);
+            if (sectionId !== "home") {
+              section.classList.add('hidden');
+              sectionButton.classList.remove('open');
+              sectionButton.classList.add('closed');
+            } else {
+              section.classList.remove('hidden');
+              if (section.classList.contains('hidden')) {
+                sectionButton.classList.toggle('open');
+                sectionButton.classList.add('closed');
+              } else {
+                sectionButton.classList.add('open');
+                sectionButton.classList.remove('closed');
+              }
+            }
+          });
+        } else {
+          allOpen = true;
+          gameState.sectionOpened = "all";
+          toggleAllButton.classList.add('open');
+          toggleAllButton.classList.remove('closed');
+          GG_ALL_GAME_CONFIG.sectionIds.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            const sectionButton = document.getElementById(`toggle-${sectionId}`);
+            if (sectionButton.classList.contains('hidden')) return;
+            section.classList.remove('hidden');
+            if (section.classList.contains('hidden')) {
+              sectionButton.classList.toggle('open');
+              sectionButton.classList.add('closed');
+            } else {
+              sectionButton.classList.add('open');
+              sectionButton.classList.remove('closed');
+            }
+          });
+        }
+        saveGame();
+      }
+
+      function openChangelog() {
+        const changelogSection = document.getElementById("changelog");
+        const changelogButton = document.getElementById("toggle-changelog");
+        if (changelogSection.classList.contains('hidden')) {
+          changelogSection.classList.remove('hidden');
+          changelogButton.classList.add('open');
+          changelogButton.classList.remove('closed');
+        } else {
+          changelogSection.classList.add('hidden');
+          changelogButton.classList.remove('open');
+          changelogButton.classList.add('closed');
+        }
+        saveGame();
+      }
+
+      function adminAction(action, value) {
+        if (gameState.userHandle !== 'bravecapercat') return '403 forbidden';
+        switch (action) {
+          case 'u':
+            updateScore();
+            return 'score updated';
+            break;
+          case 'r':
+            resetGame();
+            return 'game reset';
+            break;
+          case 'l':
+            loadGame();
+            return 'game loaded';
+            break;
+          case 't':
+            initializeTopMenu();
+            return 'top menu initialized';
+            break;
+          case 's':
+            saveGame();
+            return 'game saved';
+            break;
+          case '+c':
+            gameState.coins += value;
+            return `added ${value} to gameState.coins`;
+            break;
+          case '=c':
+            gameState.coins = value;
+            return `gameState.coins set to ${value}`;
+            break;
+          default:
+            return 'action not found';
+            break;
+        }
+      }
+
+      function Refresh(multiplier, automatic) {
+        gameState.totalReloads += 1;
+        synchronizeUpgrades();
+        let criticalReloadMultiplier = 1;
+        let criticalReloadRepeats = 0;
+        for (let i = 0; i < Math.ceil(gameState.criticalReloadChance); i++) {
+          let randomForCriticalReload = Math.random();
+          if (randomForCriticalReload < Math.min(gameState.criticalReloadRepeats, Math.min(gameState.criticalReloadChance, i + 1))) {
+            criticalReloadMultiplier *= gameState.criticalReloadMultiplier;
+            criticalReloadRepeats += 1;
+          } else {
+            break;
+          }
+        }
+        const isCriticalReload = (criticalReloadRepeats >= 1);
+        const baseIncrement = gameState.coinsPerReload * gameState.coinsPerReloadMultiplier;
+        if (isCriticalReload) {
+          if (!automatic) {
+            showDialog(`Critical Refresh (x${gameState.criticalReloadMultiplier}${criticalReloadRepeats > 2 ? `^${criticalReloadRepeats}` : ""} coins)`);
+          }
+          console.log('Critical Refresh!');
+        }
+        gameState.totalScore += baseIncrement * criticalReloadMultiplier * multiplier;
+        gameState.coins += baseIncrement * criticalReloadMultiplier * multiplier;
+        console.log('gameState', gameState); // Do not remove this line
+      }
+
+      function requestUserHandle() {
+        window.parent.postMessage({
+          type: 'REQUEST_USER_HANDLE_EVENT'
+        }, '*');
+      }
+
+      function loadGame() {
+        const loadGameEvent = {
+          type: 'REQUEST_LOAD_GAME_EVENT'
+        };
+        window.parent.postMessage(loadGameEvent, '*');
+      }
+
+      function initializeGame() {
+        loadAnnouncement();
+        requestUserHandle();
+        loadGame();
+        requestLeaderboard();
+        setInterval(saveGame, 500);
+        setInterval(requestLeaderboard, 500);
+        setInterval(updateAutoUpgrades, 25, 25);
+        setInterval(updateUpgradeButtons, 1_000);
+      }
+
+      function saveGame() {
+        const saveGameEvent = {
+          type: 'REQUEST_SAVE_GAME_EVENT',
+          save_data: gameState
+        };
+        window.parent.postMessage(saveGameEvent, '*');
+      }
+
+      function saveScore(score, scoreText, refreshes) {
+        const submitScoreEvent = {
+          type: 'REQUEST_SAVE_SCORE_EVENT',
+          score_numeric: score,
+          score_text: scoreText,
+          refreshes: refreshes,
+        };
+        window.parent.postMessage(submitScoreEvent, '*');
+      }
+
+      function requestLeaderboard() {
+        window.parent.postMessage({
+          type: 'REQUEST_LOAD_SCORES_EVENT'
+        }, '*');
+      }
+
+      function updateLeaderboard(scores) {
+        const leaderboardBody = document.getElementById('leaderboardBody');
+        leaderboardBody.innerHTML = '';
+        scores.forEach((score, index) => {
+          const row = leaderboardBody.insertRow();
+          let refreshes = score.refreshes
+          row.insertCell(0).textContent = index + 1;
+          row.insertCell(1).textContent = score.handle;
+          row.insertCell(2).textContent = formatNumber(score.score_numeric, gameState.settingLargeFormOnly);
+          if (refreshes) {
+            row.insertCell(3).textContent = formatNumber(score.refreshes, gameState.settingLargeFormOnly);
+          } else {
+            row.insertCell(3).textContent = "N/A"
+          }
+        });
+      }
+      // Responses
+      window.addEventListener('message', (event) => {
+        let {
+          type,
+          save_data,
+          scores,
+          handle
+        } = event.data;
+        if (type === 'RESPONSE_LOAD_GAME_EVENT') {
+          if (save_data) {
+            // Convert achievements made in the old system to achievements in the new system.
+            if (save_data.achievements.length <= 5) {
+              save_data.achievements.length = GG_ALL_GAME_CONFIG.achievements.length
+              save_data.achievements = [...save_data.achievements].map(value => value ?? false);
+              save_data.achievements[11] = save_data.achievements[3];
+              save_data.achievements[3] = false;
+              save_data.achievements[13] = save_data.achievements[4];
+              save_data.achievements[4] = false;
+            }
+            gameState = {
+              ...gameState,
+              ...Object.keys(save_data).reduce((acc, key) => {
+                if (key in gameState) {
+                  acc[key] = save_data[key];
+                }
+                return acc;
+              }, {}),
+            };
+          }
+          // gameState.upgrades
+          gameState.upgrades.length = GG_ALL_GAME_CONFIG.upgrades.length;
+          gameState.upgrades = [...gameState.upgrades].map(value => value ?? 0);
+          // gameState.luckUpgrades
+          gameState.luckUpgrades.length = GG_ALL_GAME_CONFIG.luckUpgrades.length;
+          gameState.luckUpgrades = [...gameState.luckUpgrades].map(value => value ?? 0);
+          // gameState.rebirthUpgrades
+          gameState.rebirthUpgrades.length = GG_ALL_GAME_CONFIG.rebirthUpgrades.length;
+          gameState.rebirthUpgrades = [...gameState.rebirthUpgrades].map(value => value ?? 0);
+          // gameState.autoUpgrades
+          gameState.autoUpgrades.length = GG_ALL_GAME_CONFIG.autoUpgrades.length;
+          gameState.autoUpgrades = [...gameState.autoUpgrades].map(value => value ?? 0);
+          Refresh(1, false);
+          if (gameState.settingDarkMode) {
+            document.body.classList.add('dark-mode');
+          }
+          if (gameState.settingLargeMode) {
+            document.body.classList.add('large-mode');
+          }
+          saveGame();
+          initializeChangelog();
+          initializeShop();
+          initializeLuckUpgrades();
+          initializeRebirthUpgrades();
+          initializeAutoUpgrades();
+          updateAchievements();
+          initializeAchievements();
+          initializeSettings();
+          initializeTopMenu();
+          updateScore();
+          openSection(gameState.sectionOpened);
+        } else if (type === 'RESPONSE_LOAD_SCORES_EVENT') {
+          updateLeaderboard(scores);
+        } else if (type === 'RESPONSE_USER_HANDLE_EVENT') {
+          if (!handle) return;
+          if (gameState.userHandle) return;
+          gameState.userHandle = handle;
+        }
+      });
+      // Make it visible
+      window.buyUpgrade = buyUpgrade;
+      window.buyLuckUpgrade = buyLuckUpgrade;
+      window.buyRebirthUpgrade = buyRebirthUpgrade;
+      window.buyAutoUpgrade = buyAutoUpgrade;
+      window.openSection = openSection;
+      window.openAllSections = openAllSections;
+      window.openChangelog = openChangelog;
+      window.toggleDarkMode = toggleDarkMode;
+      window.toggleAlerts = toggleAlerts;
+      window.toggleLFO = toggleLFO;
+      window.toggleLargeMode = toggleLargeMode;
+      window.adminAction = adminAction;
+      let gameState = getNewGameState();
+      // Load the game
+      document.addEventListener('DOMContentLoaded', initializeGame);
+    })();
+  </script>
+
+</body>
+
+</html>
