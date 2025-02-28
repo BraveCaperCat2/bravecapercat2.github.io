@@ -1,3 +1,4 @@
 [submodule "therefreshgame"]
 	path = docs/therefreshgame
 	url = https://github.com/BraveCaperCat2/the-refresh-game
+	branch = pages-dev
